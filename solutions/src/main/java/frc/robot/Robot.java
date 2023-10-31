@@ -5,7 +5,10 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -28,6 +31,10 @@ public class Robot extends TimedRobot {
   TalonFX leftBack = new TalonFX(2);
   TalonFX leftFront = new TalonFX(3);
 
+  TalonSRX encoder1 = new TalonSRX(7);
+ 
+
+  Pigeon2 pigeon = new Pigeon2(4);
   Joystick joy = new Joystick(0);
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -39,9 +46,11 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-
+    
     rightBack.follow(rightFront);
     leftBack.follow(leftFront);
+    encoder1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+   
   }
 
   /**
@@ -69,6 +78,9 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    encoder1.setSelectedSensorPosition(0);
+    
+    pigeon.setYaw(0);
   }
 
   /** This function is called periodically during autonomous. */
@@ -83,8 +95,23 @@ public class Robot extends TimedRobot {
         // Put default auto code here
         break;
     }
-    leftFront.set(ControlMode.Position, 10 * 250);
-    rightFront.set(ControlMode.Position, 10 * 250); 
+    
+    if(encoder1.getSelectedSensorPosition() < 2500){
+
+      leftFront.set(ControlMode.PercentOutput, 0.7);
+      rightFront.set(ControlMode.PercentOutput, 0.7);
+
+     } else if(encoder1.getSelectedSensorPosition() >= 2500){
+
+           while (pigeon.getYaw() != 180){
+             leftFront.set(ControlMode.PercentOutput, 1);
+             rightFront.set(ControlMode.PercentOutput, 0.1);
+
+           }
+           leftFront.set(ControlMode.PercentOutput, 0.7);
+           rightFront.set(ControlMode.PercentOutput, 0.7);
+
+     }
    }
 
   /** This function is called once when teleop is enabled. */
