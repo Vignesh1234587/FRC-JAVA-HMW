@@ -89,6 +89,29 @@ public class Robot extends TimedRobot {
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
+        
+
+          leftFront.set(ControlMode.PercentOutput, 0.7);
+          rightFront.set(ControlMode.PercentOutput, 0.7);
+    
+         
+          if(encoder1.getSelectedSensorPosition() >= 2500){
+           while (pigeon.getYaw() != 180){
+                 leftFront.set(ControlMode.PercentOutput, 1);
+                 rightFront.set(ControlMode.PercentOutput, 0.1);
+    
+               }
+          }
+
+           leftFront.set(ControlMode.PercentOutput, 0.7);
+           rightFront.set(ControlMode.PercentOutput, 0.7);
+          
+
+           if(encoder1.getSelectedSensorPosition() < 0){
+              leftFront.set(ControlMode.PercentOutput, 0);
+              rightFront.set(ControlMode.PercentOutput, 0);
+           }
+         
         break;
       case kDefaultAuto:
       default:
@@ -96,22 +119,7 @@ public class Robot extends TimedRobot {
         break;
     }
     
-    if(encoder1.getSelectedSensorPosition() < 2500){
-
-      leftFront.set(ControlMode.PercentOutput, 0.7);
-      rightFront.set(ControlMode.PercentOutput, 0.7);
-
-     } else if(encoder1.getSelectedSensorPosition() >= 2500){
-
-           while (pigeon.getYaw() != 180){
-             leftFront.set(ControlMode.PercentOutput, 1);
-             rightFront.set(ControlMode.PercentOutput, 0.1);
-
-           }
-           leftFront.set(ControlMode.PercentOutput, 0.7);
-           rightFront.set(ControlMode.PercentOutput, 0.7);
-
-     }
+    
    }
 
   /** This function is called once when teleop is enabled. */
